@@ -9,9 +9,12 @@ public class CameraDetection : MonoBehaviour
     public GameObject yMovementScript;
     public GameObject xMovementScript;
     public Transform initialPos;
+    public float speedZoomForward;
+    public float speedZoomBack;
 
-    private float x, y, z = 0;
-    private float zBack = 0;
+    private float distanceToTarget = 0;
+    private float x, y, z = -0.3f;
+    private float zBack = -0.3f;
     private List<Vector3> clipPoints;
     private List<Vector3> desiredPoints;
     private float limits;
@@ -26,13 +29,14 @@ public class CameraDetection : MonoBehaviour
         
     }
 
-    void FixedUpdate()
+    void Update()
     {
+        distanceToTarget = Vector3.Distance(baseCamera.position, transform.position);
         updateCameraClipPoints();
-        Debug.DrawRay(clipPoints[0], transform.forward * 5f, Color.green);
-        Debug.DrawRay(clipPoints[1], transform.forward * 5f, Color.green);
-        Debug.DrawRay(clipPoints[2], transform.forward * 5f, Color.green);
-        Debug.DrawRay(clipPoints[3], transform.forward * 5f, Color.green);
+        Debug.DrawRay(clipPoints[0], transform.forward * distanceToTarget, Color.green);
+        Debug.DrawRay(clipPoints[1], transform.forward * distanceToTarget, Color.green);
+        Debug.DrawRay(clipPoints[2], transform.forward * distanceToTarget, Color.green);
+        Debug.DrawRay(clipPoints[3], transform.forward * distanceToTarget, Color.green);
         Debug.DrawRay(clipPoints[0], transform.TransformDirection(Vector3.back) * 1f, Color.red);
         Debug.DrawRay(clipPoints[1], transform.TransformDirection(Vector3.back) * 1f, Color.red);
         Debug.DrawRay(clipPoints[2], transform.TransformDirection(Vector3.back) * 1f, Color.red);
@@ -58,10 +62,12 @@ public class CameraDetection : MonoBehaviour
 
     private bool CollisionDetectedAtClipPoints()
     {
-
+        RaycastHit hit;
         for(int i = 0; i < 4; i++){
-            if(Physics.Raycast(clipPoints[i], transform.TransformDirection(Vector3.forward), 5f,layerMask))
+            if(Physics.Raycast(clipPoints[i], transform.forward,out hit, distanceToTarget,layerMask))
             {
+                //xMovementScript.GetComponent<RotateAndZoomBase>().enabled = false;
+                //yMovementScript.GetComponent<CameraPivot>().enabled = false;
                 return true; 
             }
         }
@@ -72,10 +78,10 @@ public class CameraDetection : MonoBehaviour
 
     private bool CollisionDetectedAtClipPointsBack()
     {
-
+        RaycastHit hit;
         for (int i = 0; i < 4; i++)
         {
-            if (Physics.Raycast(clipPoints[i], transform.TransformDirection(Vector3.back), 1f, layerMask))
+            if (Physics.Raycast(clipPoints[i], -transform.forward,out hit, 1f, layerMask))
             {
                 return true;
             }
@@ -88,21 +94,18 @@ public class CameraDetection : MonoBehaviour
 
     private void moveForwardCameraDependingCollision()
     {
-        //Debug.Log(CollisionDetectedAtClipPoints());
         if (CollisionDetectedAtClipPoints())
         {
-            Debug.Log("ENTRO VERDE");
             limits += 0.8f * Time.deltaTime; 
-            limits = Mathf.Clamp(limits, 0, 0.8f);
+            limits = Mathf.Clamp(limits, 0, speedZoomForward);
             transform.position = Vector3.Lerp(initialPos.position, baseCamera.transform.position, limits);
         }
         else
         {
             if (!CollisionDetectedAtClipPointsBack())
             {
-                Debug.Log("ENTRO ROJO");
                 limits -= 0.8f * Time.deltaTime;
-                limits = Mathf.Clamp(limits, 0, 0.8f);
+                limits = Mathf.Clamp(limits, 0, speedZoomBack);
                 transform.position = Vector3.Lerp(initialPos.position, baseCamera.transform.position, limits);
             }
         }
