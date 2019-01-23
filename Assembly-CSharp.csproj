@@ -61,9 +61,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\DarkSouls\CameraPivot.cs" />
-    <Compile Include="Assets\Scripts\DarkSouls\RotateAndZoomBase.cs" />
-    <Compile Include="Assets\Scripts\DarkSouls\ZoomInOut.cs" />
+    <Compile Include="Assets\Scripts\Camera2D\Camera2D.cs" />
+    <Compile Include="Assets\Scripts\Camera2D\CubeMovement.cs" />
+    <Compile Include="Assets\Scripts\Camera3D\CameraDetection.cs" />
+    <Compile Include="Assets\Scripts\Camera3D\CameraPivot.cs" />
+    <Compile Include="Assets\Scripts\Camera3D\RotateAndZoomBase.cs" />
+    <Compile Include="Assets\Scripts\Camera3D\ZoomInOut.cs" />
     <Compile Include="Assets\Scripts\Warframe\BaseRotation.cs" />
     <Compile Include="Assets\Scripts\Warframe\CameraRotation.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
