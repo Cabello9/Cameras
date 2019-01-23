@@ -4,16 +4,14 @@ using UnityEngine;
 
 public class CameraDetection : MonoBehaviour
 {
-    public float farDistance;
     public Transform baseCamera;
     public LayerMask layerMask;
-    public float rate;
     public GameObject yMovementScript;
     public GameObject xMovementScript;
     public Transform initialPos;
 
     private float x, y, z = 0;
-    private float zBack = -1f;
+    private float zBack = 0;
     private List<Vector3> clipPoints;
     private List<Vector3> desiredPoints;
     private float limits;
@@ -96,7 +94,6 @@ public class CameraDetection : MonoBehaviour
             Debug.Log("ENTRO VERDE");
             limits += 0.8f * Time.deltaTime; 
             limits = Mathf.Clamp(limits, 0, 0.8f);
-            Debug.Log(limits);
             transform.position = Vector3.Lerp(initialPos.position, baseCamera.transform.position, limits);
         }
         else
